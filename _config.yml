@@ -31,3 +31,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
 port: 4001
+highlighter: pygments
