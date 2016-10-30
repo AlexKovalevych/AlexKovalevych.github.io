@@ -68,7 +68,9 @@
   <div class="post-content" itemprop="articleBody">
     <p>Elm supports html events with <a href="http://package.elm-lang.org/packages/elm-lang/html/latest">elm-lang/html</a> package.</p>
 
-<p>Using it we can create a simple application, which will just increase click counter with each click (you can copy-paste and try it <a href="http://elm-lang.org/try">here</a>):</p>
+<p>Using it we can create a simple application, which will just increase click counter with each click.</p>
+
+<p>I assume you’re familiar with typical elm application structure, but if not, you can read about it <a href="https://guide.elm-lang.org/architecture/">here</a>.</p>
 
 <figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="kn">import </span><span class="nc">Html</span> <span class="nv">exposing</span> <span class="p">(</span><span class="kt">Html</span><span class="p">,</span> <span class="nv">div</span><span class="p">,</span> <span class="nv">text</span><span class="p">,</span> <span class="nv">label</span><span class="p">)</span>
 <span class="kn">import </span><span class="nc">Html.Attributes</span> <span class="nv">exposing</span> <span class="p">(</span><span class="nv">style</span><span class="p">)</span>
@@ -77,12 +79,12 @@
 
 <span class="kr">main </span><span class="nf">:</span> <span class="kt">Program</span> <span class="kt">Never</span>
 <span class="kr">main </span><span class="nf">=</span>
-    <span class="kt">App</span><span class="nf">.</span><span class="nv">program</span>
-        <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">init</span>
-        <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
-        <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
-        <span class="p">,</span> <span class="nv">subscriptions</span> <span class="nf">=</span> <span class="nf">\</span><span class="nv">_</span> <span class="nf">-&gt;</span> <span class="kt">Sub</span><span class="nf">.</span><span class="nv">none</span>
-        <span class="p">}</span>
+  <span class="kt">App</span><span class="nf">.</span><span class="nv">program</span>
+    <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">init</span>
+    <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
+    <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
+    <span class="p">,</span> <span class="nv">subscriptions</span> <span class="nf">=</span> <span class="nf">\</span><span class="nv">_</span> <span class="nf">-&gt;</span> <span class="kt">Sub</span><span class="nf">.</span><span class="nv">none</span>
+    <span class="p">}</span>
 
 <span class="nv">init</span> <span class="nf">:</span> <span class="p">(</span> <span class="kt">Model</span><span class="p">,</span> <span class="kt">Cmd</span> <span class="kt">Msg</span> <span class="p">)</span>
 <span class="nv">init</span> <span class="nf">=</span>
@@ -132,14 +134,14 @@ increment counter in the model and let elm update the view.</p>
 
 <p>The same way works the rest of mouse events.</p>
 
-<h2 id="problem-1">Problem 1</h2>
+<h2 id="checking-click-target">Checking click target</h2>
 
 <p>But the problem with this solution is that clicking on a <code>label</code> will also increase <code>div</code> click counter (you would get the same issue, using pure javascript).
 To avoid such behavior we would check the <code>target</code> in the <code>event</code> object in the javascript. To achieve the same in elm we can use the <a href="http://package.elm-lang.org/packages/elm-lang/html/latest/Html-Events#on">custom event handler</a>:</p>
 
 <figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="nv">onClickDiv</span> <span class="nf">:</span> <span class="p">(</span><span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Msg</span><span class="p">)</span> <span class="nf">-&gt;</span> <span class="kt">Attribute</span> <span class="kt">Msg</span>
 <span class="nv">onClickDiv</span> <span class="nv">message</span> <span class="nf">=</span>
-    <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nf">&lt;|</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">at</span> <span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">,</span> <span class="s">&quot;tagName&quot;</span><span class="p">]</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
+  <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nf">&lt;|</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">at</span> <span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">,</span> <span class="s">&quot;tagName&quot;</span><span class="p">]</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
 
 <p>We should add a string parameter to <code>ClickDiv</code> message since it will receive a <code>tagName</code> now:</p>
 
@@ -159,37 +161,37 @@ To avoid such behavior we would check the <code>target</code> in the <code>event
 
 <p><img src="http://localhost:4001/assets/2.png" alt="" /></p>
 
-<h2 id="problem-2">Problem 2</h2>
+<h2 id="handling-click-with-shift-button-pressed">Handling click with “shift” button pressed</h2>
 
 <p>Now, what if we need to add a <code>shift</code> click event? In javascript, one possible solution is to check <code>event.shiftKey</code> value. We can do the same in elm.</p>
 
 <p>First, we need to define an <code>Event</code> and <code>EventTarget</code> record:</p>
 
 <figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">ClickEvent</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">shiftKey</span> <span class="nf">:</span> <span class="kt">Bool</span>
-    <span class="p">,</span> <span class="nv">target</span> <span class="nf">:</span> <span class="kt">EventTarget</span>
-    <span class="p">}</span>
+  <span class="p">{</span> <span class="nv">shiftKey</span> <span class="nf">:</span> <span class="kt">Bool</span>
+  <span class="p">,</span> <span class="nv">target</span> <span class="nf">:</span> <span class="kt">EventTarget</span>
+  <span class="p">}</span>
 
 <span class="kr">type</span> <span class="kr">alias</span> <span class="kt">EventTarget</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">tagName</span> <span class="nf">:</span> <span class="kt">String</span>
-    <span class="p">}</span></code></pre></figure>
+  <span class="p">{</span> <span class="nv">tagName</span> <span class="nf">:</span> <span class="kt">String</span>
+  <span class="p">}</span></code></pre></figure>
 
 <p>Next, we should modify a decoder, used in our custom event handler:</p>
 
 <figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="nv">onClickRow</span> <span class="nf">:</span> <span class="p">(</span><span class="kt">Event</span> <span class="nf">-&gt;</span> <span class="nv">msg</span><span class="p">)</span> <span class="nf">-&gt;</span> <span class="kt">Attribute</span> <span class="nv">msg</span>
 <span class="nv">onClickRow</span> <span class="nv">message</span> <span class="nf">=</span>
-    <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nv">clickDecoder</span><span class="p">)</span>
+  <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nv">clickDecoder</span><span class="p">)</span>
 
 <span class="nv">clickDecoder</span> <span class="nf">:</span> <span class="kt">Json</span><span class="nf">.</span><span class="kt">Decoder</span> <span class="kt">ClickEvent</span>
 <span class="nv">clickDecoder</span> <span class="nf">=</span>
-    <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">2</span> <span class="kt">ClickEvent</span>
-        <span class="p">(</span><span class="s">&quot;shiftKey&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">bool</span><span class="p">)</span>
-        <span class="p">(</span><span class="s">&quot;target&quot;</span> <span class="nf">:=</span> <span class="nv">targetDecoder</span><span class="p">)</span>
+  <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">2</span> <span class="kt">ClickEvent</span>
+    <span class="p">(</span><span class="s">&quot;shiftKey&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">bool</span><span class="p">)</span>
+    <span class="p">(</span><span class="s">&quot;target&quot;</span> <span class="nf">:=</span> <span class="nv">targetDecoder</span><span class="p">)</span>
 
 <span class="nv">targetDecoder</span> <span class="nf">:</span> <span class="kt">Json</span><span class="nf">.</span><span class="kt">Decoder</span> <span class="kt">EventTarget</span>
 <span class="nv">targetDecoder</span> <span class="nf">=</span>
-    <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">1</span> <span class="kt">EventTarget</span>
-        <span class="p">(</span><span class="s">&quot;tagName&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
+  <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">1</span> <span class="kt">EventTarget</span>
+    <span class="p">(</span><span class="s">&quot;tagName&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
 
 <p>Again, we need to change a message to receive our <code>ClickEvent</code>:</p>
 
@@ -218,12 +220,12 @@ The same way you can decode any other values from the event object.</p>
 
 <span class="kr">main </span><span class="nf">:</span> <span class="kt">Program</span> <span class="kt">Never</span>
 <span class="kr">main </span><span class="nf">=</span>
-    <span class="kt">App</span><span class="nf">.</span><span class="nv">program</span>
-        <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">init</span>
-        <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
-        <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
-        <span class="p">,</span> <span class="nv">subscriptions</span> <span class="nf">=</span> <span class="nf">\</span><span class="nv">_</span> <span class="nf">-&gt;</span> <span class="kt">Sub</span><span class="nf">.</span><span class="nv">none</span>
-        <span class="p">}</span>
+  <span class="kt">App</span><span class="nf">.</span><span class="nv">program</span>
+    <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">init</span>
+    <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
+    <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
+    <span class="p">,</span> <span class="nv">subscriptions</span> <span class="nf">=</span> <span class="nf">\</span><span class="nv">_</span> <span class="nf">-&gt;</span> <span class="kt">Sub</span><span class="nf">.</span><span class="nv">none</span>
+    <span class="p">}</span>
 
 <span class="nv">init</span> <span class="nf">:</span> <span class="p">(</span> <span class="kt">Model</span><span class="p">,</span> <span class="kt">Cmd</span> <span class="kt">Msg</span> <span class="p">)</span>
 <span class="nv">init</span> <span class="nf">=</span>
@@ -257,13 +259,13 @@ The same way you can decode any other values from the event object.</p>
   <span class="nf">|</span> <span class="kt">ClickDiv</span> <span class="kt">ClickEvent</span>
 
 <span class="kr">type</span> <span class="kr">alias</span> <span class="kt">ClickEvent</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">shiftKey</span> <span class="nf">:</span> <span class="kt">Bool</span>
-    <span class="p">,</span> <span class="nv">target</span> <span class="nf">:</span> <span class="kt">EventTarget</span>
-    <span class="p">}</span>
+  <span class="p">{</span> <span class="nv">shiftKey</span> <span class="nf">:</span> <span class="kt">Bool</span>
+  <span class="p">,</span> <span class="nv">target</span> <span class="nf">:</span> <span class="kt">EventTarget</span>
+  <span class="p">}</span>
 
 <span class="kr">type</span> <span class="kr">alias</span> <span class="kt">EventTarget</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">tagName</span> <span class="nf">:</span> <span class="kt">String</span>
-    <span class="p">}</span>
+  <span class="p">{</span> <span class="nv">tagName</span> <span class="nf">:</span> <span class="kt">String</span>
+  <span class="p">}</span>
 
 <span class="nv">update</span> <span class="nv">msg</span> <span class="nv">model</span> <span class="nf">=</span>
   <span class="kr">case</span> <span class="nv">msg</span> <span class="kr">of</span>
@@ -278,19 +280,57 @@ The same way you can decode any other values from the event object.</p>
 
 <span class="nv">onClickDiv</span> <span class="nf">:</span> <span class="p">(</span><span class="kt">ClickEvent</span> <span class="nf">-&gt;</span> <span class="nv">msg</span><span class="p">)</span> <span class="nf">-&gt;</span> <span class="kt">Attribute</span> <span class="nv">msg</span>
 <span class="nv">onClickDiv</span> <span class="nv">message</span> <span class="nf">=</span>
-    <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nv">clickDecoder</span><span class="p">)</span>
+  <span class="nv">on</span> <span class="s">&quot;click&quot;</span> <span class="p">(</span><span class="kt">Json</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">message</span> <span class="nv">clickDecoder</span><span class="p">)</span>
 
 <span class="nv">clickDecoder</span> <span class="nf">:</span> <span class="kt">Json</span><span class="nf">.</span><span class="kt">Decoder</span> <span class="kt">ClickEvent</span>
 <span class="nv">clickDecoder</span> <span class="nf">=</span>
-    <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">2</span> <span class="kt">ClickEvent</span>
-        <span class="p">(</span><span class="s">&quot;shiftKey&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">bool</span><span class="p">)</span>
-        <span class="p">(</span><span class="s">&quot;target&quot;</span> <span class="nf">:=</span> <span class="nv">targetDecoder</span><span class="p">)</span>
+  <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">2</span> <span class="kt">ClickEvent</span>
+    <span class="p">(</span><span class="s">&quot;shiftKey&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">bool</span><span class="p">)</span>
+    <span class="p">(</span><span class="s">&quot;target&quot;</span> <span class="nf">:=</span> <span class="nv">targetDecoder</span><span class="p">)</span>
 
 <span class="nv">targetDecoder</span> <span class="nf">:</span> <span class="kt">Json</span><span class="nf">.</span><span class="kt">Decoder</span> <span class="kt">EventTarget</span>
 <span class="nv">targetDecoder</span> <span class="nf">=</span>
-    <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">1</span> <span class="kt">EventTarget</span>
-        <span class="p">(</span><span class="s">&quot;tagName&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
+  <span class="kt">Json</span><span class="nf">.</span><span class="nv">object</span><span class="mi">1</span> <span class="kt">EventTarget</span>
+    <span class="p">(</span><span class="s">&quot;tagName&quot;</span> <span class="nf">:=</span> <span class="kt">Json</span><span class="nf">.</span><span class="nv">string</span><span class="p">)</span></code></pre></figure>
 
+<h2 id="sending-additional-data-with-click-event">Sending additional data with click event</h2>
+
+<p>Pretty often it is required to send additional data with event object. Since each event should send a message, we will update our click message to receive required data. In this case it will be element <code>id</code> (but you can send any data you want of course).
+First, lets update our message to receive <code>id</code> as a string:</p>
+
+<figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="kr">type</span> <span class="kt">Msg</span>
+  <span class="nf">=</span> <span class="kt">ClickLabel</span>
+  <span class="nf">|</span> <span class="kt">ClickDiv</span> <span class="kt">String</span> <span class="kt">ClickEvent</span></code></pre></figure>
+
+<p>Next, lets create several elements with different <code>id</code>:</p>
+
+<figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
+<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
+  <span class="nv">div</span>
+    <span class="p">[]</span>
+    <span class="p">[</span> <span class="nv">div</span>
+      <span class="p">[</span> <span class="nv">style</span> <span class="p">[(</span><span class="s">&quot;width&quot;</span><span class="p">,</span> <span class="s">&quot;200px&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;height&quot;</span><span class="p">,</span> <span class="s">&quot;50px&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;background-color&quot;</span><span class="p">,</span> <span class="s">&quot;red&quot;</span><span class="p">)]</span>
+      <span class="p">,</span> <span class="nv">onClickDiv</span> <span class="nf">&lt;|</span> <span class="kt">ClickDiv</span> <span class="s">&quot;&quot;</span>
+      <span class="p">]</span>
+      <span class="p">[</span> <span class="nv">label</span>
+        <span class="p">[</span> <span class="nv">onClick</span> <span class="kt">ClickLabel</span> <span class="p">]</span>
+        <span class="p">[</span> <span class="nv">text</span> <span class="nf">&lt;|</span> <span class="s">&quot;Label text&quot;</span> <span class="p">]</span>
+      <span class="p">]</span>
+    <span class="p">,</span> <span class="nv">div</span> <span class="p">[</span> <span class="nv">onClickDiv</span> <span class="nf">&lt;|</span> <span class="kt">ClickDiv</span> <span class="s">&quot;foo&quot;</span> <span class="p">]</span> <span class="p">[</span> <span class="nv">text</span> <span class="nf">&lt;|</span> <span class="s">&quot;Label clicked: &quot;</span> <span class="nf">++</span> <span class="nv">toString</span><span class="p">(</span><span class="nv">model</span><span class="nf">.</span><span class="nv">labelClicked</span><span class="p">)</span> <span class="p">]</span>
+    <span class="p">,</span> <span class="nv">div</span> <span class="p">[</span> <span class="nv">onClickDiv</span> <span class="nf">&lt;|</span> <span class="kt">ClickDiv</span> <span class="s">&quot;bar&quot;</span> <span class="p">]</span> <span class="p">[</span> <span class="nv">text</span> <span class="nf">&lt;|</span> <span class="s">&quot;Div clicked:&quot;</span> <span class="nf">++</span> <span class="nv">toString</span><span class="p">(</span><span class="nv">model</span><span class="nf">.</span><span class="nv">divClicked</span><span class="p">)</span> <span class="p">]</span>
+    <span class="p">,</span> <span class="nv">div</span> <span class="p">[]</span> <span class="p">[</span> <span class="nv">text</span> <span class="nf">&lt;|</span> <span class="s">&quot;Div Id: &quot;</span> <span class="nf">++</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">divId</span> <span class="p">]</span>
+    <span class="p">]</span></code></pre></figure>
+
+<p>and the last part is model update:</p>
+
+<figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
+  <span class="p">{</span> <span class="nv">labelClicked</span> <span class="nf">:</span> <span class="kt">Int</span>
+  <span class="p">,</span> <span class="nv">divClicked</span> <span class="nf">:</span> <span class="kt">Int</span>
+  <span class="p">,</span> <span class="nv">divId</span> <span class="nf">:</span> <span class="kt">String</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>Now with each shift + click on “Label clicked” or “Div clicked” element you will see updated “Div id” element.
+Such approach is pretty useful for lists of the same type data, so you can identificate list item which was clicked.</p>
 
   </div>
 

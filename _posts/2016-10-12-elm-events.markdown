@@ -7,7 +7,9 @@ categories: elm
 
 Elm supports html events with [elm-lang/html](http://package.elm-lang.org/packages/elm-lang/html/latest) package.
 
-Using it we can create a simple application, which will just increase click counter with each click (you can copy-paste and try it [here](http://elm-lang.org/try)):
+Using it we can create a simple application, which will just increase click counter with each click.
+
+I assume you're familiar with typical elm application structure, but if not, you can read about it [here](https://guide.elm-lang.org/architecture/).
 
 {% highlight elm %}
 
@@ -18,12 +20,12 @@ import Html.App as App
 
 main : Program Never
 main =
-    App.program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+  App.program
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = \_ -> Sub.none
+    }
 
 init : ( Model, Cmd Msg )
 init =
@@ -75,7 +77,7 @@ increment counter in the model and let elm update the view.
 
 The same way works the rest of mouse events.
 
-## Problem 1
+## Checking click target
 
 But the problem with this solution is that clicking on a `label` will also increase `div` click counter (you would get the same issue, using pure javascript).
 To avoid such behavior we would check the `target` in the `event` object in the javascript. To achieve the same in elm we can use the [custom event handler](http://package.elm-lang.org/packages/elm-lang/html/latest/Html-Events#on):
@@ -84,7 +86,7 @@ To avoid such behavior we would check the `target` in the `event` object in the 
 
 onClickDiv : (String -> Msg) -> Attribute Msg
 onClickDiv message =
-    on "click" (Json.map message <| Json.at ["target", "tagName"] Json.string)
+  on "click" (Json.map message <| Json.at ["target", "tagName"] Json.string)
 
 {% endhighlight %}
 
@@ -115,7 +117,7 @@ Now label and div click events are handled separately:
 ![]({{ site.url }}/assets/2.png)
 
 
-## Problem 2
+## Handling click with "shift" button pressed
 
 Now, what if we need to add a `shift` click event? In javascript, one possible solution is to check `event.shiftKey` value. We can do the same in elm.
 
@@ -124,13 +126,13 @@ First, we need to define an `Event` and `EventTarget` record:
 {% highlight elm %}
 
 type alias ClickEvent =
-    { shiftKey : Bool
-    , target : EventTarget
-    }
+  { shiftKey : Bool
+  , target : EventTarget
+  }
 
 type alias EventTarget =
-    { tagName : String
-    }
+  { tagName : String
+  }
 
 {% endhighlight %}
 
@@ -140,18 +142,18 @@ Next, we should modify a decoder, used in our custom event handler:
 
 onClickRow : (Event -> msg) -> Attribute msg
 onClickRow message =
-    on "click" (Json.map message clickDecoder)
+  on "click" (Json.map message clickDecoder)
 
 clickDecoder : Json.Decoder ClickEvent
 clickDecoder =
-    Json.object2 ClickEvent
-        ("shiftKey" := Json.bool)
-        ("target" := targetDecoder)
+  Json.object2 ClickEvent
+    ("shiftKey" := Json.bool)
+    ("target" := targetDecoder)
 
 targetDecoder : Json.Decoder EventTarget
 targetDecoder =
-    Json.object1 EventTarget
-        ("tagName" := Json.string)
+  Json.object1 EventTarget
+    ("tagName" := Json.string)
 
 {% endhighlight %}
 
@@ -191,12 +193,12 @@ import Json.Decode as Json exposing ((:=))
 
 main : Program Never
 main =
-    App.program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+  App.program
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = \_ -> Sub.none
+    }
 
 init : ( Model, Cmd Msg )
 init =
@@ -230,13 +232,13 @@ type Msg
   | ClickDiv ClickEvent
 
 type alias ClickEvent =
-    { shiftKey : Bool
-    , target : EventTarget
-    }
+  { shiftKey : Bool
+  , target : EventTarget
+  }
 
 type alias EventTarget =
-    { tagName : String
-    }
+  { tagName : String
+  }
 
 update msg model =
   case msg of
@@ -251,21 +253,68 @@ update msg model =
 
 onClickDiv : (ClickEvent -> msg) -> Attribute msg
 onClickDiv message =
-    on "click" (Json.map message clickDecoder)
+  on "click" (Json.map message clickDecoder)
 
 clickDecoder : Json.Decoder ClickEvent
 clickDecoder =
-    Json.object2 ClickEvent
-        ("shiftKey" := Json.bool)
-        ("target" := targetDecoder)
+  Json.object2 ClickEvent
+    ("shiftKey" := Json.bool)
+    ("target" := targetDecoder)
 
 targetDecoder : Json.Decoder EventTarget
 targetDecoder =
-    Json.object1 EventTarget
-        ("tagName" := Json.string)
+  Json.object1 EventTarget
+    ("tagName" := Json.string)
 
 {% endhighlight %}
 
-## Problem 3
+## Sending additional data with click event
 
-Pretty often it is required to send additional data with event object. Consider example, when
+Pretty often it is required to send additional data with event object. Since each event should send a message, we will update our click message to receive required data. In this case it will be element `id` (but you can send any data you want of course).
+First, lets update our message to receive `id` as a string:
+
+{% highlight elm %}
+
+type Msg
+  = ClickLabel
+  | ClickDiv String ClickEvent
+
+{% endhighlight %}
+
+Next, lets create several elements with different `id`:
+
+{% highlight elm %}
+
+view : Model -> Html Msg
+view model =
+  div
+    []
+    [ div
+      [ style [("width", "200px"), ("height", "50px"), ("background-color", "red")]
+      , onClickDiv <| ClickDiv ""
+      ]
+      [ label
+        [ onClick ClickLabel ]
+        [ text <| "Label text" ]
+      ]
+    , div [ onClickDiv <| ClickDiv "foo" ] [ text <| "Label clicked: " ++ toString(model.labelClicked) ]
+    , div [ onClickDiv <| ClickDiv "bar" ] [ text <| "Div clicked:" ++ toString(model.divClicked) ]
+    , div [] [ text <| "Div Id: " ++ model.divId ]
+    ]
+
+{% endhighlight %}
+
+and the last part is model update:
+
+{% highlight elm %}
+
+type alias Model =
+  { labelClicked : Int
+  , divClicked : Int
+  , divId : String
+  }
+
+{% endhighlight %}
+
+Now with each shift + click on "Label clicked" or "Div clicked" element you will see updated "Div id" element.
+Such approach is pretty useful for lists of the same type data, so you can identificate list item which was clicked.
