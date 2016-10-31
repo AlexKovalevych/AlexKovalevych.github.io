@@ -11,6 +11,8 @@ Using it we can create a simple application, which will just increase click coun
 
 I assume you're familiar with typical elm application structure, but if not, you can read about it [here](https://guide.elm-lang.org/architecture/).
 
+This and any other source code you can test [here](http://elm-lang.org/try):
+
 {% highlight elm %}
 
 import Html exposing (Html, div, text, label)
@@ -70,7 +72,7 @@ update msg model =
 
 After several clicks it looks like this:
 
-![this]({{ site.url }}/assets/1.png)
+![this](/assets/1.png)
 
 So, basically with each `label` or `div` click we send an appropriate message (`ClickLabel` or `ClickDiv`),
 increment counter in the model and let elm update the view.
@@ -114,7 +116,7 @@ ClickDiv tagName ->
 
 Now label and div click events are handled separately:
 
-![]({{ site.url }}/assets/2.png)
+![](/assets/2.png)
 
 
 ## Handling click with "shift" button pressed

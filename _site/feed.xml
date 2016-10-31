@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4001/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2016-10-30T18:31:44+02:00</updated><id>http://localhost:4001//</id><title type="html">Alex Kovalevych blog</title><subtitle>A blog with posts about different technologies
-</subtitle><entry><title type="html">Html events in elm</title><link href="http://localhost:4001/elm/2016/10/12/elm-events.html" rel="alternate" type="text/html" title="Html events in elm" /><published>2016-10-12T18:52:20+03:00</published><updated>2016-10-12T18:52:20+03:00</updated><id>http://localhost:4001/elm/2016/10/12/elm-events</id><content type="html" xml:base="http://localhost:4001/elm/2016/10/12/elm-events.html">&lt;p&gt;Elm supports html events with &lt;a href=&quot;http://package.elm-lang.org/packages/elm-lang/html/latest&quot;&gt;elm-lang/html&lt;/a&gt; package.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2016-10-31T10:33:43+02:00</updated><id>//</id><title type="html">Alex Kovalevych blog</title><subtitle>A blog with posts about different technologies
+</subtitle><entry><title type="html">Html events in elm</title><link href="/elm/2016/10/12/elm-events.html" rel="alternate" type="text/html" title="Html events in elm" /><published>2016-10-12T18:52:20+03:00</published><updated>2016-10-12T18:52:20+03:00</updated><id>/elm/2016/10/12/elm-events</id><content type="html" xml:base="/elm/2016/10/12/elm-events.html">&lt;p&gt;Elm supports html events with &lt;a href=&quot;http://package.elm-lang.org/packages/elm-lang/html/latest&quot;&gt;elm-lang/html&lt;/a&gt; package.&lt;/p&gt;
 
 &lt;p&gt;Using it we can create a simple application, which will just increase click counter with each click.&lt;/p&gt;
 
 &lt;p&gt;I assume you’re familiar with typical elm application structure, but if not, you can read about it &lt;a href=&quot;https://guide.elm-lang.org/architecture/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This and any other source code you can test &lt;a href=&quot;http://elm-lang.org/try&quot;&gt;here&lt;/a&gt;:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-elm&quot; data-lang=&quot;elm&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Html&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;exposing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Html.Attributes&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;exposing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -60,7 +62,7 @@
 
 &lt;p&gt;After several clicks it looks like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4001/assets/1.png&quot; alt=&quot;this&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/1.png&quot; alt=&quot;this&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;So, basically with each &lt;code&gt;label&lt;/code&gt; or &lt;code&gt;div&lt;/code&gt; click we send an appropriate message (&lt;code&gt;ClickLabel&lt;/code&gt; or &lt;code&gt;ClickDiv&lt;/code&gt;),
 increment counter in the model and let elm update the view.&lt;/p&gt;
@@ -92,7 +94,7 @@ To avoid such behavior we would check the &lt;code&gt;target&lt;/code&gt; in the
 
 &lt;p&gt;Now label and div click events are handled separately:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4001/assets/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;handling-click-with-shift-button-pressed&quot;&gt;Handling click with “shift” button pressed&lt;/h2&gt;
 
