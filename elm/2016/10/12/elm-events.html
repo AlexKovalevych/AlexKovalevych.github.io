@@ -10,7 +10,7 @@
   <meta name="description" content="Elm supports html events with elm-lang/html package.">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://localhost:4001/elm/2016/10/12/elm-events.html">
+  <link rel="canonical" href="https://alexkovalevych.github.io/elm/2016/10/12/elm-events.html">
   <link rel="alternate" type="application/rss+xml" title="Alex Kovalevych blog" href="/feed.xml">
   
   
@@ -72,6 +72,8 @@
 
 <p>I assume you’re familiar with typical elm application structure, but if not, you can read about it <a href="https://guide.elm-lang.org/architecture/">here</a>.</p>
 
+<p>This and any other source code you can test <a href="http://elm-lang.org/try">here</a>:</p>
+
 <figure class="highlight"><pre><code class="language-elm" data-lang="elm"><span></span><span class="kn">import </span><span class="nc">Html</span> <span class="nv">exposing</span> <span class="p">(</span><span class="kt">Html</span><span class="p">,</span> <span class="nv">div</span><span class="p">,</span> <span class="nv">text</span><span class="p">,</span> <span class="nv">label</span><span class="p">)</span>
 <span class="kn">import </span><span class="nc">Html.Attributes</span> <span class="nv">exposing</span> <span class="p">(</span><span class="nv">style</span><span class="p">)</span>
 <span class="kn">import </span><span class="nc">Html.Events</span> <span class="nv">exposing</span> <span class="p">(</span><span class="nv">onClick</span><span class="p">)</span>
@@ -127,7 +129,7 @@
 
 <p>After several clicks it looks like this:</p>
 
-<p><img src="http://localhost:4001/assets/1.png" alt="this" /></p>
+<p><img src="/assets/1.png" alt="this" /></p>
 
 <p>So, basically with each <code>label</code> or <code>div</code> click we send an appropriate message (<code>ClickLabel</code> or <code>ClickDiv</code>),
 increment counter in the model and let elm update the view.</p>
@@ -159,7 +161,7 @@ To avoid such behavior we would check the <code>target</code> in the <code>event
 
 <p>Now label and div click events are handled separately:</p>
 
-<p><img src="http://localhost:4001/assets/2.png" alt="" /></p>
+<p><img src="/assets/2.png" alt="" /></p>
 
 <h2 id="handling-click-with-shift-button-pressed">Handling click with “shift” button pressed</h2>
 
